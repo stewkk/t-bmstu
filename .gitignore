@@ -1,0 +1,11 @@
+.DS_Store
+.idea
+*.log
+tmp/
+
+main
+/tests/.mypy_cache/
+/.mypy_cache/
+/tests/__pycache__/
+/.envrc
+/.venv/

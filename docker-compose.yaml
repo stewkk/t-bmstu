@@ -1,0 +1,14 @@
+---
+version: "2.3"
+
+services:
+    app:
+        image: stewkk/testsuite-golang
+        environment: []
+        volumes:
+            - .:/app:rw
+            - ~/go/pkg/mod:/go/pkg/mod
+            - ~/.cache/go-build:/root/.cache/go-build
+        ports:
+            - 8080:8080
+        working_dir: /app

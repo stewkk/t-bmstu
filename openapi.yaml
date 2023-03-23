@@ -1,0 +1,95 @@
+---
+openapi: 3.0.0
+info:
+  title: T-BMSTU
+  description: |
+    Testing system for IU9 ICPC club.
+  version: 0.0.1
+servers:
+  - url: https://t-bmstu.starovoytovai.ru/
+    description: Main (production) server.
+  - url: http://localhost:8080/
+    description: Local server for testing.
+
+paths:
+  /ping:
+    get:
+      summary: Ping.
+      operationId: ping
+      responses:
+        '200':
+          description: OK
+  /api/problems/{problemId}:
+    summary: Represents a problem.
+    get:
+      summary: Get problem.
+      description: |
+        Get problem description.
+      tags:
+        - api
+      operationId: getProblem
+      parameters:
+        - in: path
+          name: problemId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of problem.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/x-yaml:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          $ref: '#/components/responses/Error'
+  /problems/{problemId}:
+    summary: Problem view.
+    get:
+      tags:
+        - ui
+      operationId: getProblemView
+      parameters:
+        - in: path
+          name: problemId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of problem.
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+components:
+  responses:
+    Error:
+      description: Unexpected error.
+      schema:
+        $ref: '#/components/Error'
+  schemas:
+    Problem:
+      type: object
+      properties:
+        statement:
+          type: string
+      required:
+        - statement
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
