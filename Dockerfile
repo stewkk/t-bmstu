@@ -23,7 +23,7 @@ RUN apt-get install -y --allow-unauthenticated \
 
 RUN apt-get clean all
 
-RUN pip3 install yandex-taxi-testsuite[postgresql-binary]
+RUN pip3 install yandex-taxi-testsuite[postgresql-binary] bs4
 COPY --from=oapi /oapi-codegen /usr/bin/oapi-codegen
 
 EXPOSE 8080

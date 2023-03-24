@@ -12,17 +12,25 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// Problem defines model for Problem.
+type Problem struct {
+	Statement string `json:"statement"`
+}
+
+// ProblemId defines model for ProblemId.
+type ProblemId = openapi_types.UUID
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Get problem.
 	// (GET /api/problems/{problemId})
-	GetProblem(ctx echo.Context, problemId openapi_types.UUID) error
+	GetProblem(ctx echo.Context, problemId ProblemId) error
 	// Ping.
 	// (GET /ping)
 	Ping(ctx echo.Context) error
 
 	// (GET /problems/{problemId})
-	GetProblemView(ctx echo.Context, problemId openapi_types.UUID) error
+	GetProblemView(ctx echo.Context, problemId ProblemId) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -34,7 +42,7 @@ type ServerInterfaceWrapper struct {
 func (w *ServerInterfaceWrapper) GetProblem(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "problemId" -------------
-	var problemId openapi_types.UUID
+	var problemId ProblemId
 
 	err = runtime.BindStyledParameterWithLocation("simple", false, "problemId", runtime.ParamLocationPath, ctx.Param("problemId"), &problemId)
 	if err != nil {
@@ -59,7 +67,7 @@ func (w *ServerInterfaceWrapper) Ping(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) GetProblemView(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "problemId" -------------
-	var problemId openapi_types.UUID
+	var problemId ProblemId
 
 	err = runtime.BindStyledParameterWithLocation("simple", false, "problemId", runtime.ParamLocationPath, ctx.Param("problemId"), &problemId)
 	if err != nil {

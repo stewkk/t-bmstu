@@ -3,22 +3,25 @@ package api
 import (
 	"net/http"
 
-	"github.com/labstack/echo/v4"
 	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
+	"github.com/labstack/echo/v4"
+	"github.com/stewkk/t-bmstu/pkg/service"
 )
 
-type ServerInterfaceImpl struct {}
-
-
+type ServerInterfaceImpl struct {
+	Service service.TestingSystemService
+}
 
 func (handler *ServerInterfaceImpl) Ping(ctx echo.Context) error {
 	return ctx.NoContent(http.StatusOK)
 }
 
 func (handler *ServerInterfaceImpl) GetProblem(ctx echo.Context, problemId openapi_types.UUID) error {
-	return nil
+	problem := handler.Service.GetProblem(problemId)
+	return ctx.JSONPretty(http.StatusOK, problem, "    ")
 }
 
 func (handler *ServerInterfaceImpl) GetProblemView(ctx echo.Context, problemId openapi_types.UUID) error {
-	return nil
+	problem := handler.Service.GetProblem(problemId)
+	return ctx.Render(http.StatusOK, "problem", problem)
 }

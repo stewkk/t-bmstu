@@ -2,6 +2,8 @@ PYTHON     = $(firstword $(shell which python3.9 python3.8 python3.7 python3))
 PYTEST      ?= $(PYTHON) -m pytest
 PYTEST_ARGS ?= -vv
 
+OPENAPI ?= api/openapi.yaml
+
 APP_ARGS ?=
 
 # NOTE: use Makefile.local for customization
@@ -22,8 +24,8 @@ DOCKER_TARGETS = $(foreach target,$(TARGETS),docker-$(target))
 
 codegen:
 	@mkdir -p internal/api/
-	@oapi-codegen -package=api -generate=types openapi.yaml > internal/api/types.go
-	@oapi-codegen -package=api -generate=server openapi.yaml > internal/api/api.go
+	@oapi-codegen -package=models -generate=types $(OPENAPI) > pkg/models/types.go
+	@oapi-codegen -package=api -generate=types,server $(OPENAPI) > internal/api/api.go
 
 test: utest build
 	@PYTHONPATH=../.. TESTSUITE_ALLOW_ROOT=1 $(PYTEST) $(PYTEST_ARGS) tests
