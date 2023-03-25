@@ -19,7 +19,7 @@ paths:
       responses:
         '200':
           description: OK
-  /api/problems/{problemId}:
+  /problems/{problemId}:
     summary: Represents a problem.
     get:
       summary: Get problem.
@@ -27,6 +27,7 @@ paths:
         Get problem description.
       tags:
         - api
+        - ui
       operationId: getProblem
       parameters:
         - in: path
@@ -45,28 +46,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        default:
-          $ref: '#/components/responses/Error'
-  /problems/{problemId}:
-    summary: Problem view.
-    get:
-      tags:
-        - ui
-      operationId: getProblemView
-      parameters:
-        - in: path
-          name: problemId
-          schema:
-            $ref: '#/components/schemas/ProblemId'
-          required: true
-          description: UUID of problem.
-      responses:
-        '200':
-          description: OK
-          content:
             text/html:
               schema:
                 type: string
+        default:
+          $ref: '#/components/responses/Error'
 components:
   responses:
     Error:

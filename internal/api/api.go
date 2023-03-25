@@ -22,20 +22,26 @@ type ProblemId = openapi_types.UUID
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// Get problem.
-	// (GET /api/problems/{problemId})
-	GetProblem(ctx echo.Context, problemId ProblemId) error
 	// Ping.
 	// (GET /ping)
 	Ping(ctx echo.Context) error
-
+	// Get problem.
 	// (GET /problems/{problemId})
-	GetProblemView(ctx echo.Context, problemId ProblemId) error
+	GetProblem(ctx echo.Context, problemId ProblemId) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
 type ServerInterfaceWrapper struct {
 	Handler ServerInterface
+}
+
+// Ping converts echo context to params.
+func (w *ServerInterfaceWrapper) Ping(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.Ping(ctx)
+	return err
 }
 
 // GetProblem converts echo context to params.
@@ -51,31 +57,6 @@ func (w *ServerInterfaceWrapper) GetProblem(ctx echo.Context) error {
 
 	// Invoke the callback with all the unmarshalled arguments
 	err = w.Handler.GetProblem(ctx, problemId)
-	return err
-}
-
-// Ping converts echo context to params.
-func (w *ServerInterfaceWrapper) Ping(ctx echo.Context) error {
-	var err error
-
-	// Invoke the callback with all the unmarshalled arguments
-	err = w.Handler.Ping(ctx)
-	return err
-}
-
-// GetProblemView converts echo context to params.
-func (w *ServerInterfaceWrapper) GetProblemView(ctx echo.Context) error {
-	var err error
-	// ------------- Path parameter "problemId" -------------
-	var problemId ProblemId
-
-	err = runtime.BindStyledParameterWithLocation("simple", false, "problemId", runtime.ParamLocationPath, ctx.Param("problemId"), &problemId)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter problemId: %s", err))
-	}
-
-	// Invoke the callback with all the unmarshalled arguments
-	err = w.Handler.GetProblemView(ctx, problemId)
 	return err
 }
 
@@ -107,8 +88,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
-	router.GET(baseURL+"/api/problems/:problemId", wrapper.GetProblem)
 	router.GET(baseURL+"/ping", wrapper.Ping)
-	router.GET(baseURL+"/problems/:problemId", wrapper.GetProblemView)
+	router.GET(baseURL+"/problems/:problemId", wrapper.GetProblem)
 
 }

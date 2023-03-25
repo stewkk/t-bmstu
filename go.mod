@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/deepmap/oapi-codegen v1.12.4
 	github.com/labstack/echo/v4 v4.10.2
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
