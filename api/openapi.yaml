@@ -32,8 +32,7 @@ paths:
         - in: path
           name: problemId
           schema:
-            type: string
-            format: uuid
+            $ref: '#/components/schemas/ProblemId'
           required: true
           description: UUID of problem.
       responses:
@@ -58,8 +57,7 @@ paths:
         - in: path
           name: problemId
           schema:
-            type: string
-            format: uuid
+            $ref: '#/components/schemas/ProblemId'
           required: true
           description: UUID of problem.
       responses:
@@ -93,3 +91,6 @@ components:
       required:
         - code
         - message
+    ProblemId:
+      type: string
+      format: uuid
