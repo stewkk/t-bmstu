@@ -7,6 +7,12 @@ import (
 	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
 )
 
+// Error defines model for Error.
+type Error struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
 // Problem defines model for Problem.
 type Problem struct {
 	Statement string `json:"statement"`

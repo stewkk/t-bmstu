@@ -6,19 +6,30 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/stewkk/t-bmstu/internal/api"
+	"github.com/stewkk/t-bmstu/internal/views"
+	"github.com/stewkk/t-bmstu/internal/errors"
 	"github.com/stewkk/t-bmstu/pkg/service"
-	"github.com/stewkk/t-bmstu/pkg/views"
 )
 
 func main() {
-	myApi := api.ServerInterfaceImpl{
+	apiImpl := api.ServerInterfaceImpl{
 		Service: service.TestingSystemService{},
 	}
+	viewsImpl := views.ServerInterfaceImpl{
+		Service: service.TestingSystemService{},
+	}
+
     e := echo.New()
 	e.Renderer =  &views.Template{
 		Templates: template.Must(template.ParseGlob("web/templates/*.html")),
 	}
+	e.HTTPErrorHandler = errors.ErrorHandler
 
-    api.RegisterHandlers(e, &myApi)
+	apiGroup := e.Group("", api.TagApiMiddleware)
+	viewGroup := e.Group("", views.TagViewMiddleWare)
+
+    api.RegisterHandlers(apiGroup, &apiImpl)
+	views.RegisterHandlers(viewGroup, &viewsImpl)
+
 	e.Logger.Fatal(e.Start(":8080"))
 }
