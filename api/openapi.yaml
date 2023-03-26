@@ -16,6 +16,8 @@ paths:
     get:
       summary: Ping.
       operationId: ping
+      tags:
+        - api
       responses:
         '200':
           description: OK
@@ -39,9 +41,6 @@ paths:
         '200':
           description: OK
           content:
-            application/x-yaml:
-              schema:
-                $ref: '#/components/schemas/Problem'
             application/json:
               schema:
                 $ref: '#/components/schemas/Problem'
@@ -72,7 +71,7 @@ components:
     Error:
       description: Unexpected error.
       schema:
-        $ref: '#/components/Error'
+        $ref: '#/components/schemas/Error'
   schemas:
     Problem:
       type: object
@@ -85,7 +84,7 @@ components:
       type: object
       properties:
         code:
-          type: string
+          type: integer
         message:
           type: string
       required:

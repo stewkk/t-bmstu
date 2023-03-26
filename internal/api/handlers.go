@@ -20,8 +20,3 @@ func (handler *ServerInterfaceImpl) GetProblem(ctx echo.Context, problemId opena
 	problem := handler.Service.GetProblem(problemId)
 	return ctx.JSONPretty(http.StatusOK, problem, "    ")
 }
-
-func (handler *ServerInterfaceImpl) GetProblemView(ctx echo.Context, problemId openapi_types.UUID) error {
-	problem := handler.Service.GetProblem(problemId)
-	return ctx.Render(http.StatusOK, "problem", problem)
-}

@@ -28,9 +28,6 @@ type ServerInterface interface {
 	// Ping.
 	// (GET /ping)
 	Ping(ctx echo.Context) error
-
-	// (GET /problems/{problemId})
-	GetProblemView(ctx echo.Context, problemId ProblemId) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -60,22 +57,6 @@ func (w *ServerInterfaceWrapper) Ping(ctx echo.Context) error {
 
 	// Invoke the callback with all the unmarshalled arguments
 	err = w.Handler.Ping(ctx)
-	return err
-}
-
-// GetProblemView converts echo context to params.
-func (w *ServerInterfaceWrapper) GetProblemView(ctx echo.Context) error {
-	var err error
-	// ------------- Path parameter "problemId" -------------
-	var problemId ProblemId
-
-	err = runtime.BindStyledParameterWithLocation("simple", false, "problemId", runtime.ParamLocationPath, ctx.Param("problemId"), &problemId)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter problemId: %s", err))
-	}
-
-	// Invoke the callback with all the unmarshalled arguments
-	err = w.Handler.GetProblemView(ctx, problemId)
 	return err
 }
 
@@ -109,6 +90,5 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 
 	router.GET(baseURL+"/api/problems/:problemId", wrapper.GetProblem)
 	router.GET(baseURL+"/ping", wrapper.Ping)
-	router.GET(baseURL+"/problems/:problemId", wrapper.GetProblemView)
 
 }

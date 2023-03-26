@@ -1,6 +1,6 @@
 PYTHON     = $(firstword $(shell which python3.9 python3.8 python3.7 python3))
 PYTEST      ?= $(PYTHON) -m pytest
-PYTEST_ARGS ?= -vv
+PYTEST_ARGS ?= -vv --disable-pytest-warnings
 
 OPENAPI ?= api/openapi.yaml
 
@@ -24,8 +24,9 @@ DOCKER_TARGETS = $(foreach target,$(TARGETS),docker-$(target))
 
 codegen:
 	@mkdir -p internal/api/
-	@oapi-codegen -package=models -generate=types $(OPENAPI) > pkg/models/types.go
-	@oapi-codegen -package=api -generate=types,server $(OPENAPI) > internal/api/api.go
+	@oapi-codegen -package=models -generate=types,skip-prune $(OPENAPI) > pkg/models/types.gen.go
+	@oapi-codegen -package=api -generate=types,server -include-tags=api $(OPENAPI) > internal/api/handlers.gen.go
+	@oapi-codegen -package=views -generate=types,server -include-tags=ui $(OPENAPI) > internal/views/handlers.gen.go
 
 test: utest build
 	@PYTHONPATH=../.. TESTSUITE_ALLOW_ROOT=1 $(PYTEST) $(PYTEST_ARGS) tests
