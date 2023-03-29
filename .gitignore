@@ -3,6 +3,7 @@
 *.log
 tmp/
 cf
+template.py
 
 main
 /tests/.mypy_cache/

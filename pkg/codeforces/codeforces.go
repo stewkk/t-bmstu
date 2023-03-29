@@ -1,4 +1,4 @@
-package timus
+package codeforces
 
 import (
 	"github.com/AngelicHedgehog/cf-tool/client"
@@ -16,7 +16,7 @@ func (ts *TestingSystem) GetProblem(problemId models.ProblemId) models.Problem {
 	}
 }
 
-func (ts *TestingSystem) Auth() {
+func (ts *TestingSystem) Auth(login, password string) {
 	cfgPath, _ := homedir.Expand("~/.cf/config")
 	clnPath, _ := homedir.Expand("~/.cf/session")
 	config.Init(cfgPath)
@@ -25,18 +25,18 @@ func (ts *TestingSystem) Auth() {
 	cfg := config.Instance
 	cln := client.Instance
 
-	cln.ConfigLogin(false, "serj_1313@mail.ru", "password-haha")
+	cln.ConfigLogin(false, login, password)
 	cfg.AddTemplate(false, "31", "template.py", []string{""}, "py", "", "python3 $%full%$", "", false)
 }
 
-func (ts *TestingSystem) Submit() {
+func (ts *TestingSystem) Submit(ContestID, ProblemID, source_code string) {
 	client.Instance.Submit(
 		client.Info{
 			ProblemType: "contest",
-			ContestID:   "896",
-			ProblemID:   "B",
+			ContestID:   ContestID,
+			ProblemID:   ProblemID,
 		},
-		"31", `print('Haha, это работает...')`,
+		"31", source_code,
 	)
 }
 
