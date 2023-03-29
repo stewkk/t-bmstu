@@ -2,6 +2,7 @@
 .idea
 *.log
 tmp/
+cf
 
 main
 /tests/.mypy_cache/
