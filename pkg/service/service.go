@@ -26,3 +26,11 @@ func (s *TestingSystemService) GetProblem(problemId models.ProblemId) (models.Pr
 	}
 	return s.ts.GetProblem(url)
 }
+
+func (s *TestingSystemService) GetSubmissions() ([]models.SubmissionStatus, error) {
+	return nil, nil
+}
+
+func (s *TestingSystemService) GetProblems() (models.Problems, error) {
+	return models.Problems{}, nil
+}
