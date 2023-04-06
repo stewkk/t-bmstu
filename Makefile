@@ -44,7 +44,7 @@ clean:
 	@rm main
 
 $(DOCKER_TARGETS): docker-%:
-	@docker compose run --rm app $(MAKE) $*
+	@docker compose run --service-ports --rm app $(MAKE) $*
 
 .PHONY: docker-clean-data
 docker-clean-data:
