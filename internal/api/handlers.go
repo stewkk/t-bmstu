@@ -17,6 +17,9 @@ func (handler *ServerInterfaceImpl) Ping(ctx echo.Context) error {
 }
 
 func (handler *ServerInterfaceImpl) GetProblem(ctx echo.Context, problemId openapi_types.UUID) error {
-	problem := handler.Service.GetProblem(problemId)
+	problem, err := handler.Service.GetProblem(problemId)
+	if err != nil {
+		return err
+	}
 	return ctx.JSONPretty(http.StatusOK, problem, "    ")
 }

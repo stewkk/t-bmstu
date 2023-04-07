@@ -24,6 +24,9 @@ type ServerInterfaceImpl struct {
 }
 
 func (handler *ServerInterfaceImpl) GetProblemView(ctx echo.Context, problemId openapi_types.UUID) error {
-	problem := handler.Service.GetProblem(problemId)
+	problem, err := handler.Service.GetProblem(problemId)
+	if err != nil {
+		return err
+	}
 	return ctx.Render(http.StatusOK, "problem", problem)
 }
