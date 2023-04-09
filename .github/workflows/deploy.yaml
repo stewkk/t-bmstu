@@ -30,7 +30,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.HOST2 }}
-          username: ${{ secrets.USERNAME2 }}
-          password: ${{ secrets.PASSWORD2 }}
-          port: ${{ secrets.PORT2 }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
           script: ./deploy.sh
