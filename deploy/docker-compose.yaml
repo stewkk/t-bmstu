@@ -1,0 +1,29 @@
+---
+version: "2.3"
+
+services:
+    t-bmstu:
+        image: stewkk/t-bmstu
+        container_name: t-bmstu
+        environment: []
+        restart: always
+    swag:
+        image: ghcr.io/linuxserver/swag
+        container_name: swag
+        cap_add:
+          - NET_ADMIN
+        environment:
+          - PUID=1000
+          - PGID=1000
+          - TZ=Europe/Moscow
+          - URL=starovoytovai.ru
+          - SUBDOMAINS=t-bmstu
+          - ONLY_SUBDOMAINS=true
+          - VALIDATION=http
+          - EMAIL=stewk6@gmail.com
+        volumes:
+          - /var/swag/:/config
+        ports:
+          - 443:443
+          - 80:80
+        restart: always
