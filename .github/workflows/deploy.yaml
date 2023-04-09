@@ -19,14 +19,14 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: build and push dev image
+      - name: build and push prod image
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./deploy/Dockerfile
           push: true
           tags: stewkk/t-bmstu
-      - name: executing remote ssh commands using password
+      - name: executing remote ssh commands using key
         uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.HOST2 }}
