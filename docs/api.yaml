@@ -192,20 +192,25 @@ components:
           type: string
         statement:
           type: string
+          x-go-type: template.HTML
         id:
           $ref: '#/components/schemas/ProblemId'
       required:
+        - name
         - statement
+        - id
     Error:
       type: object
       properties:
-        code:
+        status:
           type: integer
-        message:
+        title:
+          type: string
+        detail:
           type: string
       required:
-        - code
-        - message
+        - status
+        - title
     ProblemId:
       type: string
       format: uuid

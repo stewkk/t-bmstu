@@ -2,7 +2,7 @@ PYTHON     = $(firstword $(shell which python3.9 python3.8 python3.7 python3))
 PYTEST      ?= $(PYTHON) -m pytest
 PYTEST_ARGS ?= -vv --disable-pytest-warnings
 
-OPENAPI ?= api/openapi.yaml
+OPENAPI ?= docs/api.yaml
 
 APP_ARGS ?=
 
@@ -20,13 +20,13 @@ TARGETS = \
 	run \
 	clean
 DOCKER_TARGETS = $(foreach target,$(TARGETS),docker-$(target))
-.PHONY: $(TARGETS) $(DOCKER_TARGETS)
+.PHONY: $(TARGETS) $(DOCKER_TARGETS) docker docker-update
 
 codegen:
-	@mkdir -p internal/api/
-	@oapi-codegen -package=models -generate=types,skip-prune $(OPENAPI) > pkg/models/types.gen.go
-	@oapi-codegen -package=api -generate=types,server -include-tags=api $(OPENAPI) > internal/api/handlers.gen.go
-	@oapi-codegen -package=views -generate=types,server -include-tags=ui $(OPENAPI) > internal/views/handlers.gen.go
+	@oapi-codegen -package=rest -generate=types,server -include-tags=api $(OPENAPI) > internal/adapters/rest/handlers.gen.go
+	@oapi-codegen -package=html -generate=types,server,skip-prune -include-tags=ui $(OPENAPI) > internal/adapters/html/handlers.gen.go
+	@oapi-codegen -package=errors -generate=types,skip-prune docs/errors.yaml > pkg/errors/errors.gen.go
+	@go generate ./...
 
 test: utest build
 	@PYTHONPATH=../.. TESTSUITE_ALLOW_ROOT=1 $(PYTEST) $(PYTEST_ARGS) tests
@@ -42,6 +42,14 @@ build:
 
 clean:
 	@rm main
+
+docker:
+	@docker compose run --rm -it app bash
+
+docker-update:
+	@docker build --tag stewkk/testsuite-golang .
+	@docker push stewkk/testsuite-golang
+	@docker compose pull
 
 $(DOCKER_TARGETS): docker-%:
 	@docker compose run --service-ports --rm app $(MAKE) $*

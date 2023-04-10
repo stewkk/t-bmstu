@@ -17,5 +17,5 @@ async def test_view_problem(app_client, load):
         '/problems/7a81f316-add0-4dc9-85a7-28b8fd747f8f',
     )
     assert response.status_code == 200
-    assert BeautifulSoup(
-        response.content, features='html.parser').text == load('7a81f316-add0-4dc9-85a7-28b8fd747f8f.html')[:-1]
+    assert str(BeautifulSoup(
+        response.content, features='html.parser').find(id='statement')).strip() == load('7a81f316-add0-4dc9-85a7-28b8fd747f8f.html')[:-1]

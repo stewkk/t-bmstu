@@ -25,6 +25,8 @@ RUN apt-get clean all
 
 RUN pip3 install yandex-taxi-testsuite[postgresql-binary] bs4
 COPY --from=oapi /oapi-codegen /usr/bin/oapi-codegen
+RUN go install github.com/vektra/mockery/v2@v2.30.1
+RUN go install golang.org/x/tools/cmd/stringer@latest
 
 EXPOSE 8080
 
