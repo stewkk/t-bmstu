@@ -1,9 +1,9 @@
 package views
 
 import (
+	"html/template"
 	"io"
 	"net/http"
-	"html/template"
 
 	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
 	"github.com/labstack/echo/v4"
@@ -12,7 +12,7 @@ import (
 )
 
 type Template struct {
-    Templates *template.Template
+	Templates *template.Template
 }
 
 func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
@@ -28,6 +28,7 @@ func (handler *ServerInterfaceImpl) GetProblemView(ctx echo.Context, problemId o
 	if err != nil {
 		return err
 	}
+
 	return ctx.Render(http.StatusOK, "problem", problem)
 }
 

@@ -29,7 +29,11 @@ func (handler *ServerInterfaceImpl) GetProblems(ctx echo.Context) error {
 }
 
 func (handler *ServerInterfaceImpl) SumbitSolution(ctx echo.Context, problemId ProblemIdParameter) error {
-	return nil
+	err := handler.Service.SumbitSolution(problemId)
+	if err != nil {
+		return err
+	}
+	return ctx.JSONPretty(http.StatusOK, "afsd", identation)
 }
 
 func (handler *ServerInterfaceImpl) GetSubmissions(ctx echo.Context) error {

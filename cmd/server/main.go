@@ -20,8 +20,8 @@ func main() {
 		Service: service.TestingSystemService{},
 	}
 
-    e := echo.New()
-	e.Renderer =  &views.Template{
+	e := echo.New()
+	e.Renderer = &views.Template{
 		Templates: template.Must(template.ParseGlob("web/templates/*.html")),
 	}
 	e.HTTPErrorHandler = errors.ErrorHandler
@@ -31,7 +31,7 @@ func main() {
 	apiGroup := e.Group("", api.TagApiMiddleware)
 	viewGroup := e.Group("", views.TagViewMiddleWare)
 
-    api.RegisterHandlers(apiGroup, &apiImpl)
+	api.RegisterHandlers(apiGroup, &apiImpl)
 	views.RegisterHandlers(viewGroup, &viewsImpl)
 
 	e.Logger.Fatal(e.Start(":8080"))
