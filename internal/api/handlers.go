@@ -17,6 +17,27 @@ func (handler *ServerInterfaceImpl) Ping(ctx echo.Context) error {
 }
 
 func (handler *ServerInterfaceImpl) GetProblem(ctx echo.Context, problemId openapi_types.UUID) error {
-	problem := handler.Service.GetProblem(problemId)
-	return ctx.JSONPretty(http.StatusOK, problem, "    ")
+	problem, err := handler.Service.GetProblem(problemId)
+	if err != nil {
+		return err
+	}
+	return ctx.JSONPretty(http.StatusOK, problem, identation)
 }
+
+func (handler *ServerInterfaceImpl) GetProblems(ctx echo.Context) error {
+	return nil
+}
+
+func (handler *ServerInterfaceImpl) SumbitSolution(ctx echo.Context, problemId ProblemIdParameter) error {
+	return nil
+}
+
+func (handler *ServerInterfaceImpl) GetSubmissions(ctx echo.Context) error {
+	return nil
+}
+
+func (handler *ServerInterfaceImpl) GetSubmissionStatus(ctx echo.Context, submissionId SubmissionIdParameter) error {
+	return nil
+}
+
+const identation = "    "

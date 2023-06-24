@@ -3,18 +3,18 @@ openapi: 3.0.0
 info:
   title: T-BMSTU
   description: |
-    Testing system for IU9 ICPC club.
-  version: 0.0.1
+    Testing system for IU9 ICPC club
+  version: 0.5.0
 servers:
   - url: https://t-bmstu.starovoytovai.ru/
-    description: Main (production) server.
+    description: Main (production) server
   - url: http://localhost:8080/
-    description: Local server for testing.
+    description: Local server for testing
 
 paths:
   /ping:
     get:
-      summary: Ping.
+      summary: Healthcheck
       operationId: ping
       tags:
         - api
@@ -22,21 +22,16 @@ paths:
         '200':
           description: OK
   /api/problems/{problemId}:
-    summary: Represents a problem.
+    summary: Represents a problem
     get:
-      summary: Get problem.
+      summary: Get problem by id
       description: |
         Get problem description.
       tags:
         - api
       operationId: getProblem
       parameters:
-        - in: path
-          name: problemId
-          schema:
-            $ref: '#/components/schemas/ProblemId'
-          required: true
-          description: UUID of problem.
+        - $ref: '#/components/parameters/ProblemIdParameter'
       responses:
         '200':
           description: OK
@@ -45,20 +40,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
         default:
-          $ref: '#/components/responses/Error'
+          $ref: '#/components/responses/ErrorResponse'
   /problems/{problemId}:
-    summary: Problem view.
+    summary: Problem view
     get:
       tags:
         - ui
       operationId: getProblemView
       parameters:
-        - in: path
-          name: problemId
-          schema:
-            $ref: '#/components/schemas/ProblemId'
-          required: true
-          description: UUID of problem.
+        - $ref: '#/components/parameters/ProblemIdParameter'
       responses:
         '200':
           description: OK
@@ -66,18 +56,144 @@ paths:
             text/html:
               schema:
                 type: string
+  /api/problems:
+    get:
+      summary: Get list of problems
+      tags:
+        - api
+      operationId: getProblems
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problems'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+  /problems:
+    summary: View of list of problems
+    get:
+      tags:
+        - ui
+      operationId: getProblemsView
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+  /api/submissions/{submissionId}:
+    get:
+      summary: Get submission by id
+      tags:
+        - api
+      operationId: getSubmissionStatus
+      parameters:
+        - $ref: '#/components/parameters/SubmissionIdParameter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+  /api/submissions:
+    summary: Represents submissions
+    get:
+      summary: Get submissions list
+      tags:
+        - api
+      operationId: getSubmissions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SubmissionStatus'
+                required:
+                  - items
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+  /problems/{problemId}/submissions:
+    summary: Submissions view
+    get:
+      tags:
+        - ui
+      operationId: getSubmissionsView
+      parameters:
+        - $ref: '#/components/parameters/ProblemIdParameter'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+  /api/problems/{problemId}/submit:
+    summary: Create submission.
+    post:
+      summary: Submit a problem solution
+      tags:
+        - api
+      operationId: sumbitSolution
+      parameters:
+        - $ref: '#/components/parameters/ProblemIdParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitBody'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedSubmission'
 components:
   responses:
-    Error:
-      description: Unexpected error.
+    ErrorResponse:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    ProblemIdParameter:
+      in: path
+      name: problemId
       schema:
-        $ref: '#/components/schemas/Error'
+        $ref: '#/components/schemas/ProblemId'
+      required: true
+      description: UUID of problem
+    SubmissionIdParameter:
+      in: path
+      name: submissionId
+      schema:
+        $ref: '#/components/schemas/SubmissionId'
+      required: true
+      description: UUID of submission
   schemas:
     Problem:
       type: object
       properties:
+        name:
+          type: string
         statement:
           type: string
+        id:
+          $ref: '#/components/schemas/ProblemId'
       required:
         - statement
     Error:
@@ -93,3 +209,91 @@ components:
     ProblemId:
       type: string
       format: uuid
+    SubmissionId:
+      type: string
+      format: uuid
+    SubmissionStatus:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/SubmissionId'
+        status:
+          $ref: '#/components/schemas/JudjeStatus'
+        problemId:
+          $ref: '#/components/schemas/ProblemId'
+      required:
+        - id
+        - status
+        - problemId
+    Problems:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/ProblemId'
+              link:
+                type: string
+                format: uri
+              name:
+                type: string
+              status:
+                $ref: '#/components/schemas/JudjeStatus'
+            required:
+              - id
+              - link
+              - name
+              - status
+    Submission:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/SubmissionId'
+        status:
+          $ref: '#/components/schemas/JudjeStatus'
+        problemId:
+          $ref: '#/components/schemas/ProblemId'
+        language:
+          $ref: '#/components/schemas/SubmissionLanguage'
+        sourceCode:
+          type: string
+      required:
+        - id
+        - status
+        - language
+        - sourceCode
+        - problemId
+    SubmitBody:
+      type: object
+      properties:
+        problemId:
+          $ref: '#/components/schemas/ProblemId'
+        language:
+          $ref: '#/components/schemas/SubmissionLanguage'
+        sourceCode:
+          type: string
+      required:
+        - problemId
+        - language
+        - sourceCode
+    CreatedSubmission:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/SubmissionId'
+        link:
+          type: string
+          format: uri
+      required:
+        - id
+    JudjeStatus:
+      # TODO: enum?
+      type: string
+    SubmissionLanguage:
+      # TODO: enum?
+      type: string

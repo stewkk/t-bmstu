@@ -4,10 +4,11 @@ import (
 	"html/template"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/stewkk/t-bmstu/internal/api"
-	"github.com/stewkk/t-bmstu/internal/views"
 	"github.com/stewkk/t-bmstu/internal/errors"
+	"github.com/stewkk/t-bmstu/internal/views"
 	"github.com/stewkk/t-bmstu/pkg/service"
 )
 
@@ -24,6 +25,8 @@ func main() {
 		Templates: template.Must(template.ParseGlob("web/templates/*.html")),
 	}
 	e.HTTPErrorHandler = errors.ErrorHandler
+
+	e.Use(middleware.CORS())
 
 	apiGroup := e.Group("", api.TagApiMiddleware)
 	viewGroup := e.Group("", views.TagViewMiddleWare)

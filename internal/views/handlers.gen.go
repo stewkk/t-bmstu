@@ -15,11 +15,20 @@ import (
 // ProblemId defines model for ProblemId.
 type ProblemId = openapi_types.UUID
 
+// ProblemIdParameter defines model for ProblemIdParameter.
+type ProblemIdParameter = ProblemId
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
+	// (GET /problems)
+	GetProblemsView(ctx echo.Context) error
+
 	// (GET /problems/{problemId})
-	GetProblemView(ctx echo.Context, problemId ProblemId) error
+	GetProblemView(ctx echo.Context, problemId ProblemIdParameter) error
+
+	// (GET /problems/{problemId}/submissions)
+	GetSubmissionsView(ctx echo.Context, problemId ProblemIdParameter) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -27,11 +36,20 @@ type ServerInterfaceWrapper struct {
 	Handler ServerInterface
 }
 
+// GetProblemsView converts echo context to params.
+func (w *ServerInterfaceWrapper) GetProblemsView(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetProblemsView(ctx)
+	return err
+}
+
 // GetProblemView converts echo context to params.
 func (w *ServerInterfaceWrapper) GetProblemView(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "problemId" -------------
-	var problemId ProblemId
+	var problemId ProblemIdParameter
 
 	err = runtime.BindStyledParameterWithLocation("simple", false, "problemId", runtime.ParamLocationPath, ctx.Param("problemId"), &problemId)
 	if err != nil {
@@ -40,6 +58,22 @@ func (w *ServerInterfaceWrapper) GetProblemView(ctx echo.Context) error {
 
 	// Invoke the callback with all the unmarshalled arguments
 	err = w.Handler.GetProblemView(ctx, problemId)
+	return err
+}
+
+// GetSubmissionsView converts echo context to params.
+func (w *ServerInterfaceWrapper) GetSubmissionsView(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "problemId" -------------
+	var problemId ProblemIdParameter
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "problemId", runtime.ParamLocationPath, ctx.Param("problemId"), &problemId)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter problemId: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetSubmissionsView(ctx, problemId)
 	return err
 }
 
@@ -71,6 +105,8 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
+	router.GET(baseURL+"/problems", wrapper.GetProblemsView)
 	router.GET(baseURL+"/problems/:problemId", wrapper.GetProblemView)
+	router.GET(baseURL+"/problems/:problemId/submissions", wrapper.GetSubmissionsView)
 
 }

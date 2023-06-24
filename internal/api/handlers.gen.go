@@ -12,20 +12,100 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// CreatedSubmission defines model for CreatedSubmission.
+type CreatedSubmission struct {
+	Id   SubmissionId `json:"id"`
+	Link *string      `json:"link,omitempty"`
+}
+
+// Error defines model for Error.
+type Error struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
+// JudjeStatus defines model for JudjeStatus.
+type JudjeStatus = string
+
 // Problem defines model for Problem.
 type Problem struct {
-	Statement string `json:"statement"`
+	Id        *ProblemId `json:"id,omitempty"`
+	Name      *string    `json:"name,omitempty"`
+	Statement string     `json:"statement"`
 }
 
 // ProblemId defines model for ProblemId.
 type ProblemId = openapi_types.UUID
 
+// Problems defines model for Problems.
+type Problems struct {
+	Items []struct {
+		Id     ProblemId   `json:"id"`
+		Link   string      `json:"link"`
+		Name   string      `json:"name"`
+		Status JudjeStatus `json:"status"`
+	} `json:"items"`
+}
+
+// Submission defines model for Submission.
+type Submission struct {
+	Id         SubmissionId       `json:"id"`
+	Language   SubmissionLanguage `json:"language"`
+	ProblemId  ProblemId          `json:"problemId"`
+	SourceCode string             `json:"sourceCode"`
+	Status     JudjeStatus        `json:"status"`
+}
+
+// SubmissionId defines model for SubmissionId.
+type SubmissionId = openapi_types.UUID
+
+// SubmissionLanguage defines model for SubmissionLanguage.
+type SubmissionLanguage = string
+
+// SubmissionStatus defines model for SubmissionStatus.
+type SubmissionStatus struct {
+	Id        SubmissionId `json:"id"`
+	ProblemId ProblemId    `json:"problemId"`
+	Status    JudjeStatus  `json:"status"`
+}
+
+// SubmitBody defines model for SubmitBody.
+type SubmitBody struct {
+	Language   SubmissionLanguage `json:"language"`
+	ProblemId  ProblemId          `json:"problemId"`
+	SourceCode string             `json:"sourceCode"`
+}
+
+// ProblemIdParameter defines model for ProblemIdParameter.
+type ProblemIdParameter = ProblemId
+
+// SubmissionIdParameter defines model for SubmissionIdParameter.
+type SubmissionIdParameter = SubmissionId
+
+// ErrorResponse defines model for ErrorResponse.
+type ErrorResponse = Error
+
+// SumbitSolutionJSONRequestBody defines body for SumbitSolution for application/json ContentType.
+type SumbitSolutionJSONRequestBody = SubmitBody
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// Get problem.
+	// Get list of problems
+	// (GET /api/problems)
+	GetProblems(ctx echo.Context) error
+	// Get problem by id
 	// (GET /api/problems/{problemId})
-	GetProblem(ctx echo.Context, problemId ProblemId) error
-	// Ping.
+	GetProblem(ctx echo.Context, problemId ProblemIdParameter) error
+	// Submit a problem solution
+	// (POST /api/problems/{problemId}/submit)
+	SumbitSolution(ctx echo.Context, problemId ProblemIdParameter) error
+	// Get submissions list
+	// (GET /api/submissions)
+	GetSubmissions(ctx echo.Context) error
+	// Get submission by id
+	// (GET /api/submissions/{submissionId})
+	GetSubmissionStatus(ctx echo.Context, submissionId SubmissionIdParameter) error
+	// Healthcheck
 	// (GET /ping)
 	Ping(ctx echo.Context) error
 }
@@ -35,11 +115,20 @@ type ServerInterfaceWrapper struct {
 	Handler ServerInterface
 }
 
+// GetProblems converts echo context to params.
+func (w *ServerInterfaceWrapper) GetProblems(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetProblems(ctx)
+	return err
+}
+
 // GetProblem converts echo context to params.
 func (w *ServerInterfaceWrapper) GetProblem(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "problemId" -------------
-	var problemId ProblemId
+	var problemId ProblemIdParameter
 
 	err = runtime.BindStyledParameterWithLocation("simple", false, "problemId", runtime.ParamLocationPath, ctx.Param("problemId"), &problemId)
 	if err != nil {
@@ -48,6 +137,47 @@ func (w *ServerInterfaceWrapper) GetProblem(ctx echo.Context) error {
 
 	// Invoke the callback with all the unmarshalled arguments
 	err = w.Handler.GetProblem(ctx, problemId)
+	return err
+}
+
+// SumbitSolution converts echo context to params.
+func (w *ServerInterfaceWrapper) SumbitSolution(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "problemId" -------------
+	var problemId ProblemIdParameter
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "problemId", runtime.ParamLocationPath, ctx.Param("problemId"), &problemId)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter problemId: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.SumbitSolution(ctx, problemId)
+	return err
+}
+
+// GetSubmissions converts echo context to params.
+func (w *ServerInterfaceWrapper) GetSubmissions(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetSubmissions(ctx)
+	return err
+}
+
+// GetSubmissionStatus converts echo context to params.
+func (w *ServerInterfaceWrapper) GetSubmissionStatus(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "submissionId" -------------
+	var submissionId SubmissionIdParameter
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "submissionId", runtime.ParamLocationPath, ctx.Param("submissionId"), &submissionId)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter submissionId: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetSubmissionStatus(ctx, submissionId)
 	return err
 }
 
@@ -88,7 +218,11 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
+	router.GET(baseURL+"/api/problems", wrapper.GetProblems)
 	router.GET(baseURL+"/api/problems/:problemId", wrapper.GetProblem)
+	router.POST(baseURL+"/api/problems/:problemId/submit", wrapper.SumbitSolution)
+	router.GET(baseURL+"/api/submissions", wrapper.GetSubmissions)
+	router.GET(baseURL+"/api/submissions/:submissionId", wrapper.GetSubmissionStatus)
 	router.GET(baseURL+"/ping", wrapper.Ping)
 
 }

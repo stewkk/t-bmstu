@@ -1,0 +1,42 @@
+---
+version: "2.3"
+
+services:
+    t-bmstu:
+        image: stewkk/t-bmstu
+        container_name: t-bmstu
+        environment: []
+        restart: always
+    swag:
+        image: ghcr.io/linuxserver/swag
+        container_name: swag
+        cap_add:
+          - NET_ADMIN
+        environment:
+          - PUID=1000
+          - PGID=1000
+          - TZ=Europe/Moscow
+          - URL=starovoytovai.ru
+          - SUBDOMAINS=t-bmstu
+          - ONLY_SUBDOMAINS=true
+          - VALIDATION=http
+          - EMAIL=stewk6@gmail.com
+        volumes:
+          - /var/swag/:/config
+        ports:
+          - 443:443
+          - 80:80
+        restart: always
+    oauth2-proxy:
+      image: quay.io/oauth2-proxy/oauth2-proxy:v7.2.1
+      container_name: oauth2-proxy
+      volumes:
+        - "./oauth2-proxy.conf:/oauth2-proxy.cfg"
+      env_file:
+        - ".env"
+      command: --config /oauth2-proxy.cfg
+      environment:
+        - OAUTH2_PROXY_COOKIE_SECRET:${OAUTH2_PROXY_COOKIE_SECRET}
+        - OAUTH2_PROXY_CLIENT_ID:${OAUTH2_PROXY_CLIENT_ID}
+        - OAUTH2_PROXY_CLIENT_SECRET:${OAUTH2_PROXY_CLIENT_SECRET}
+      restart: always
