@@ -9,7 +9,7 @@ type SubmissionCreateRequest struct {
 	ProblemId string
 	SourceCode string
 	Language string
-	Extra interface{}
+	ExternalId string
 }
 
 type SubmissionCreateResponse struct {

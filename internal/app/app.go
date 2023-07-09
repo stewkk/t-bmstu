@@ -49,7 +49,7 @@ func (a *App) SubmitSolution(input SubmissionInput) (SubmissionMetaDto, error) {
 		ProblemId:  p.Id,
 		SourceCode: input.Body,
 		Language:   input.Language,
-		Extra:      p.Extra,
+		ExternalId:      p.ExternalId,
 	})
 	if err != nil {
 		return SubmissionMetaDto{}, err

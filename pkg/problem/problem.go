@@ -5,12 +5,13 @@ import "errors"
 type Problem struct {
 	ProblemMeta
 	Statement string
-	Extra interface{}
 }
 
 type ProblemMeta struct {
 	Id string
 	Ts TestingSystemType
+	ExternalId string
+	ExternalLink string
 }
 
 //go:generate stringer -type=TestingSystemType
@@ -27,12 +28,4 @@ func NewTestingSystemType(s string) (TestingSystemType, error) {
 		}
 	}
 	return -1, errors.New("bad TestingSystemType")
-}
-
-type TimusExtra struct {
-	TimusId string
-}
-
-type CodeforcesExtra struct {
-	CfId string
 }

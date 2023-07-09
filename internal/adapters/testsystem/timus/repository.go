@@ -24,15 +24,18 @@ func (r *WebProblemRepo) GetProblem(id string) (problem.Problem, error) {
 	if err != nil {
 		return problem.Problem{}, err
 	}
+	link := "https://acm.timus.ru/problem.aspx?num="+tid
 
 	ts := timus.TestingSystem{}
-	p, err := ts.GetProblem("https://acm.timus.ru/problem.aspx?num="+tid)
+	p, err := ts.GetProblem(link)
 	return problem.Problem{
-		ProblemMeta: problem.ProblemMeta{Id: id, Ts: problem.Timus},
-		Statement:   p.Statement,
-		Extra:       problem.TimusExtra{
-			TimusId: tid,
+		ProblemMeta: problem.ProblemMeta{
+			Id:           id,
+			Ts:           problem.Timus,
+			ExternalId:   tid,
+			ExternalLink: link,
 		},
+		Statement:   p.Statement,
 	}, err
 }
 
