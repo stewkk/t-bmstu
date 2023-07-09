@@ -20,23 +20,23 @@ func (_m *Repository) EXPECT() *Repository_Expecter {
 	return &Repository_Expecter{mock: &_m.Mock}
 }
 
-// GetProblem provides a mock function with given fields: _a0
-func (_m *Repository) GetProblem(_a0 string) (problem.Problem, error) {
-	ret := _m.Called(_a0)
+// GetProblem provides a mock function with given fields: id
+func (_m *Repository) GetProblem(id string) (problem.Problem, error) {
+	ret := _m.Called(id)
 
 	var r0 problem.Problem
 	var r1 error
 	if rf, ok := ret.Get(0).(func(string) (problem.Problem, error)); ok {
-		return rf(_a0)
+		return rf(id)
 	}
 	if rf, ok := ret.Get(0).(func(string) problem.Problem); ok {
-		r0 = rf(_a0)
+		r0 = rf(id)
 	} else {
 		r0 = ret.Get(0).(problem.Problem)
 	}
 
 	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(_a0)
+		r1 = rf(id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -50,12 +50,12 @@ type Repository_GetProblem_Call struct {
 }
 
 // GetProblem is a helper method to define mock.On call
-//   - _a0 string
-func (_e *Repository_Expecter) GetProblem(_a0 interface{}) *Repository_GetProblem_Call {
-	return &Repository_GetProblem_Call{Call: _e.mock.On("GetProblem", _a0)}
+//   - id string
+func (_e *Repository_Expecter) GetProblem(id interface{}) *Repository_GetProblem_Call {
+	return &Repository_GetProblem_Call{Call: _e.mock.On("GetProblem", id)}
 }
 
-func (_c *Repository_GetProblem_Call) Run(run func(_a0 string)) *Repository_GetProblem_Call {
+func (_c *Repository_GetProblem_Call) Run(run func(id string)) *Repository_GetProblem_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(string))
 	})

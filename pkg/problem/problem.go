@@ -10,6 +10,8 @@ type Problem struct {
 type ProblemMeta struct {
 	Id string
 	Ts TestingSystemType
+	ExternalId string
+	ExternalLink string
 }
 
 //go:generate stringer -type=TestingSystemType

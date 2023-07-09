@@ -40,7 +40,17 @@ func (a* App) GetProblem(id string) (ProblemDto, error) {
 }
 
 func (a *App) SubmitSolution(input SubmissionInput) (SubmissionMetaDto, error) {
-	r, err := a.ts.SubmitSolution(&testsystem.SubmissionCreateRequest{})
+	p, err := a.problemRepo.GetProblem(input.ProblemId)
+	if err != nil {
+		return SubmissionMetaDto{}, err
+	}
+
+	r, err := a.ts.SubmitSolution(&testsystem.SubmissionCreateRequest{
+		ProblemId:  p.Id,
+		SourceCode: input.Body,
+		Language:   input.Language,
+		ExternalId:      p.ExternalId,
+	})
 	if err != nil {
 		return SubmissionMetaDto{}, err
 	}

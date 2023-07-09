@@ -11,6 +11,7 @@ type TestingSystem struct{}
 
 type Problem struct {
 	Statement string
+	TimusId string
 }
 
 func (ts *TestingSystem) GetProblem(url string) (Problem, error) {

@@ -14,10 +14,10 @@ import (
 
 func main() {
 	restServer := rest.Server{
-		App: app.NewApp(&timus.WebProblemRepo{}, nil),
+		App: app.NewApp(&timus.WebProblemRepo{}, &timus.TestingSystem{}),
 	}
 	htmlServer := html.Server{
-		App: app.NewApp(&timus.WebProblemRepo{}, nil),
+		App: app.NewApp(&timus.WebProblemRepo{}, &timus.TestingSystem{}),
 	}
 
 	e := echo.New()

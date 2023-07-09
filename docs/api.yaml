@@ -276,14 +276,11 @@ components:
     SubmitBody:
       type: object
       properties:
-        problemId:
-          $ref: '#/components/schemas/ProblemId'
         language:
           $ref: '#/components/schemas/SubmissionLanguage'
         sourceCode:
           type: string
       required:
-        - problemId
         - language
         - sourceCode
     CreatedSubmission:

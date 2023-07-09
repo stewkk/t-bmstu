@@ -143,8 +143,8 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    "code": document.getElementById("Code").value,
-                    "language": 57, // TODO to cast to a number
+                    "sourceCode": document.getElementById("Code").value,
+                    "language": "python3", // TODO: enum of languages
                 })
             })
                 .then(response => {

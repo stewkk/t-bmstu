@@ -31,7 +31,7 @@ type SubmissionMetaDto struct {
 	Id string
 }
 
-func ToSumbissionMetaDto(s submission.SubmissionMeta) SubmissionMetaDto {
+func ToSubmissionMetaDto(s submission.SubmissionMeta) SubmissionMetaDto {
 	return SubmissionMetaDto{
 		Id: s.Id,
 	}

@@ -83,6 +83,7 @@ func (s *AppSuite) TestSumbitSolutionReturnsSubmissionWithId() {
 	s.ts.EXPECT().SubmitSolution(mock.Anything).Return(&testsystem.SubmissionCreateResponse{
 		SubmissionId: "some-id",
 	}, nil).Once()
+	s.problemRepo.EXPECT().GetProblem("problem-id").Return(problem.Problem{}, nil)
 
 	got, _ := s.app.SubmitSolution(SubmissionInput{
 		ProblemId: "problem-id",
@@ -94,8 +95,8 @@ func (s *AppSuite) TestSumbitSolutionReturnsSubmissionWithId() {
 }
 
 func (s *AppSuite) TestSubmitSolutionHandlesTestSystemError() {
-	want := errors.New(http.StatusInternalServerError, "Unexpected error")
-	s.ts.EXPECT().SubmitSolution(mock.Anything).Return(nil, want)
+	want := errors.New(http.StatusNotFound, "Problem with id non-existing-id not found")
+	s.problemRepo.EXPECT().GetProblem("non-existing-id").Return(problem.Problem{}, want)
 	var got *errors.Error
 
 	_, err := s.app.SubmitSolution(SubmissionInput{
