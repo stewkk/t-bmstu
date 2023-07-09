@@ -74,7 +74,6 @@ type SubmissionStatus struct {
 // SubmitBody defines model for SubmitBody.
 type SubmitBody struct {
 	Language   SubmissionLanguage `json:"language"`
-	ProblemId  ProblemId          `json:"problemId"`
 	SourceCode string             `json:"sourceCode"`
 }
 
