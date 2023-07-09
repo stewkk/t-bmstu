@@ -1,38 +1,36 @@
 package main
 
 import (
-	"html/template"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
-	"github.com/stewkk/t-bmstu/internal/api"
-	"github.com/stewkk/t-bmstu/internal/errors"
-	"github.com/stewkk/t-bmstu/internal/views"
-	"github.com/stewkk/t-bmstu/pkg/service"
+	"github.com/stewkk/t-bmstu/pkg/errors"
+
+	"github.com/stewkk/t-bmstu/internal/adapters/html"
+	"github.com/stewkk/t-bmstu/internal/adapters/rest"
+	"github.com/stewkk/t-bmstu/internal/adapters/testsystem/timus"
+	"github.com/stewkk/t-bmstu/internal/app"
 )
 
 func main() {
-	apiImpl := api.ServerInterfaceImpl{
-		Service: service.TestingSystemService{},
+	restServer := rest.Server{
+		App: app.NewApp(&timus.WebProblemRepo{}, nil),
 	}
-	viewsImpl := views.ServerInterfaceImpl{
-		Service: service.TestingSystemService{},
+	htmlServer := html.Server{
+		App: app.NewApp(&timus.WebProblemRepo{}, nil),
 	}
 
-    e := echo.New()
-	e.Renderer =  &views.Template{
-		Templates: template.Must(template.ParseGlob("web/templates/*.html")),
-	}
+	e := echo.New()
+	e.Renderer = html.NewTemplate("web/templates/*.html")
 	e.HTTPErrorHandler = errors.ErrorHandler
 
 	e.Use(middleware.CORS())
 
-	apiGroup := e.Group("", api.TagApiMiddleware)
-	viewGroup := e.Group("", views.TagViewMiddleWare)
+	restGroup := e.Group("", rest.TagMiddleware)
+	htmlGroup := e.Group("", html.TagMiddleware)
 
-    api.RegisterHandlers(apiGroup, &apiImpl)
-	views.RegisterHandlers(viewGroup, &viewsImpl)
+	rest.RegisterHandlers(restGroup, &restServer)
+	html.RegisterHandlers(htmlGroup, &htmlServer)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

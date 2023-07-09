@@ -1,0 +1,15 @@
+---
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+        title:
+          type: string
+        detail:
+          type: string
+      required:
+        - status
+        - title
