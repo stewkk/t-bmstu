@@ -13,7 +13,7 @@ import (
 // Make sure we conform to TestingSystem interface
 var _ problem.Repository = (*WebProblemRepo)(nil)
 
-type WebProblemRepo struct {}
+type WebProblemRepo struct{}
 
 func (r *WebProblemRepo) GetProblems() ([]problem.ProblemMeta, error) {
 	return nil, nil
@@ -24,7 +24,7 @@ func (r *WebProblemRepo) GetProblem(id string) (problem.Problem, error) {
 	if err != nil {
 		return problem.Problem{}, err
 	}
-	link := "https://acm.timus.ru/problem.aspx?num="+tid
+	link := "https://acm.timus.ru/problem.aspx?num=" + tid + "&locale=ru"
 
 	ts := timus.TestingSystem{}
 	p, err := ts.GetProblem(link)
@@ -35,7 +35,7 @@ func (r *WebProblemRepo) GetProblem(id string) (problem.Problem, error) {
 			ExternalId:   tid,
 			ExternalLink: link,
 		},
-		Statement:   p.Statement,
+		Statement: p.Statement,
 	}, err
 }
 

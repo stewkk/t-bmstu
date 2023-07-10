@@ -26,10 +26,31 @@ func (s *Server) GetProblemView(ctx echo.Context, problemId ProblemIdParameter) 
 		return err
 	}
 
+	languages := []string{"FreePascal 2.6",
+		"Visual C 2019",
+		"Visual C++ 2019",
+		"Visual C 2019 x64",
+		"Visual C++ 2019 x64",
+		"GCC 9.2 x64",
+		"G++ 9.2 x64",
+		"Clang++ 10 x64",
+		"Java 1.8",
+		"Visual C# 2019",
+		"Python 3.8 x64",
+		"PyPy 3.8 x64",
+		"Go 1.14 x64",
+		"Ruby 1.9",
+		"Haskell 7.6",
+		"Scala 2.11",
+		"Rust 1.58 x64",
+		"Kotlin 1.4.0",
+	}
+
 	return ctx.Render(http.StatusOK, "problem", Problem{
 		Id:        problemId,
 		Name:      "TODO",
 		Statement: template.HTML(problem.Statement),
+		Languages: languages,
 	})
 }
 
