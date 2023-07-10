@@ -26,6 +26,26 @@ func (*TestingSystem) SubmitSolution(r *testsystem.SubmissionCreateRequest) (*te
 }
 
 func toTimusLang(l string) string {
-	// TODO: only python for now
-	return "57"
+	n := map[string]string{
+		"FreePascal 2.6":      "31",
+		"Visual C 2019":       "63",
+		"Visual C++ 2019":     "64",
+		"Visual C 2019 x64":   "65",
+		"Visual C++ 2019 x64": "66",
+		"GCC 9.2 x64":         "67",
+		"G++ 9.2 x64":         "68",
+		"Clang++ 10 x64":      "69",
+		"Java 1.8":            "32",
+		"Visual C# 2019":      "61",
+		"Python 3.8 x64":      "57",
+		"PyPy 3.8 x64":        "71",
+		"Go 1.14 x64":         "58",
+		"Ruby 1.9":            "18",
+		"Haskell 7.6":         "19",
+		"Scala 2.11":          "33",
+		"Rust 1.58 x64":       "72",
+		"Kotlin 1.4.0":        "60",
+	}
+
+	return n[l]
 }

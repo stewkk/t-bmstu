@@ -7,7 +7,7 @@ import (
 
 type App struct {
 	problemRepo problem.Repository
-	ts testsystem.TestingSystem
+	ts          testsystem.TestingSystem
 }
 
 func NewApp(problemRepo problem.Repository, ts testsystem.TestingSystem) App {
@@ -30,7 +30,7 @@ func (a *App) GetProblems() ([]ProblemMetaDto, error) {
 	return problemsDto, nil
 }
 
-func (a* App) GetProblem(id string) (ProblemDto, error) {
+func (a *App) GetProblem(id string) (ProblemDto, error) {
 	p, err := a.problemRepo.GetProblem(id)
 	if err != nil {
 		return ProblemDto{}, err
@@ -49,7 +49,7 @@ func (a *App) SubmitSolution(input SubmissionInput) (SubmissionMetaDto, error) {
 		ProblemId:  p.Id,
 		SourceCode: input.Body,
 		Language:   input.Language,
-		ExternalId:      p.ExternalId,
+		ExternalId: p.ExternalId,
 	})
 	if err != nil {
 		return SubmissionMetaDto{}, err

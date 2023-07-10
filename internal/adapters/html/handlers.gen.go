@@ -34,6 +34,7 @@ type Problem struct {
 	Id        ProblemId     `json:"id"`
 	Name      string        `json:"name"`
 	Statement template.HTML `json:"statement"`
+	Languages []string      `json:"statement"`
 }
 
 // ProblemId defines model for ProblemId.

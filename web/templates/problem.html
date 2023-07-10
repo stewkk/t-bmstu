@@ -63,10 +63,9 @@
                         Select an language
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" onclick="selectItem('C++')">C++</a></li>
-                        <li><a class="dropdown-item" onclick="selectItem('Java')">Java</a></li>
-                        <li><a class="dropdown-item" onclick="selectItem('Python')">Python</a></li>
-                        <li><a class="dropdown-item" onclick="selectItem('JS')">JS</a></li>
+                        {{range .Languages}}
+                            <li><a class="dropdown-item" onclick="selectItem('{{.}}')">{{.}}</a></li>
+                        {{end}}
                     </ul>
                 </div>
 
@@ -144,7 +143,7 @@
                 },
                 body: JSON.stringify({
                     "sourceCode": document.getElementById("Code").value,
-                    "language": "python3", // TODO: enum of languages
+                    "language": document.getElementById('dropdownMenuButton').innerText,
                 })
             })
                 .then(response => {
